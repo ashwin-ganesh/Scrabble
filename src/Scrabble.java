@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.lang.Math;
 
 public class Scrabble {
 
@@ -44,7 +45,7 @@ public class Scrabble {
 	private static Set<String> allWords = new HashSet<String>();
 
 	private String getSorted(String word) {
-		char[] wordArray = word.toCharArray();
+		char[] wordArray = word.toUpperCase().toCharArray();
 		Arrays.sort(wordArray);
 		return String.valueOf(wordArray);
 	}
@@ -99,19 +100,13 @@ public class Scrabble {
 		return newWords;
 	}
 
-	public static void main(String[] args) throws IOException {
-		Scrabble game = new Scrabble();
-		String filePath = args[0];
-		game.getAllWords(filePath);
-		String tileSet = args[1];
-		int output = game.getMaxScore(tileSet);
-		System.out.println("Max Score : " + output);
-	}
+	
 
 	private int getMaxScore(String word) {
 
 		int maxScore = 0;
 		Set<String> tileSetWords = getAllCombinations(word);
+
 		for (String str : tileSetWords) {
 			int score = getScore(str);
 			if (maxScore < score) {
@@ -120,5 +115,47 @@ public class Scrabble {
 		}
 
 		return maxScore;
+	}
+	
+	private int getMaxScore2(String word){
+		
+		word = word.replace(" ","");
+		
+		int currmaxscore = getMaxScore(word);
+		int no_of_spaces = word.length() - word.replaceAll(" ", "").length();
+		
+		for(char alphabet = 'A'; alphabet <= 'Z';alphabet++) {
+			
+			String s = word;
+			s=s+alphabet;
+			//System.out.println(s);
+			currmaxscore = Math.max(currmaxscore, getMaxScore(s));
+			
+		}
+		
+		return currmaxscore;
+	}
+	
+	public static void main(String[] args) throws IOException {
+		Scrabble game = new Scrabble();
+		String filePath = args[0];
+		game.getAllWords(filePath);
+		String tileSet = args[1].toUpperCase();
+		int output = game.getMaxScore(tileSet);
+		System.out.println("Max Score : " + output);
+		//game.getMaxScore2(tileSet);
+		int output2 = game.getMaxScore2(tileSet);
+		int no_of_dollars = tileSet.length() - tileSet.replaceAll("$", "").length();
+		System.out.println("Dollars:" + no_of_dollars);
+		if( no_of_dollars == 1 )
+			System.out.println("Max Score 2: " + output2);
+		
+		
+		
+		
+			
+			
+		
+		
 	}
 }
